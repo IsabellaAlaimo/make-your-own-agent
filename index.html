@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Make your own agent!</title>
+<style>
+:root{--bg:#faf8f4;--card:#fff;--ink:#1f2328;--mute:#5d6570;--line:#e3ded4;--accent:#2f4f8a;--accent-ink:#fff;--code:#f3f0e8}
+@media (prefers-color-scheme:dark){:root{--bg:#16181b;--card:#1f2226;--ink:#eceae5;--mute:#a1a8b0;--line:#33383e;--accent:#8fb0ee;--accent-ink:#0f1a30;--code:#14161a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 Georgia,'Times New Roman',serif;padding:24px max(16px,env(safe-area-inset-left)) 80px max(16px,env(safe-area-inset-right))}
+main{max-width:780px;margin:0 auto}
+h1{font-size:2.2rem;line-height:1.2;margin:8px 0 4px}
+h2{font-size:1.45rem;margin:40px 0 8px;padding-top:12px;border-top:1px solid var(--line)}
+h3{font-size:1.1rem;margin:24px 0 6px;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+p,li{margin:0 0 10px}ul,ol{padding-left:24px}
+.mute{color:var(--mute);font-size:.9rem;font-family:system-ui,sans-serif}
+nav{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:16px 0;font-family:system-ui,sans-serif;font-size:.95rem}
+nav a{color:var(--accent);margin-right:14px;display:inline-block}
+.box{position:relative;margin:10px 0 18px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px;margin:0;white-space:pre-wrap;word-wrap:break-word;font:.84rem/1.5 ui-monospace,Menlo,Consolas,monospace;max-height:420px;overflow:auto}
+button.copy{font:600 .85rem system-ui,sans-serif;background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:9px 14px;min-height:40px;cursor:pointer;margin-bottom:6px}
+.look{background:var(--card);border-left:4px solid var(--accent);padding:8px 12px;border-radius:6px;font-size:.95rem}
+</style></head><body>
+<main>
+<h1>Make your own agent!</h1>
+<p class="mute">Updated Oct 26, 2026 · Free to share with faculty, staff and students</p>
+<nav><b>Jump to:</b> <a href="#what">What is an agent</a><a href="#before">Before you start</a><a href="#student">Student agent</a><a href="#staff">Faculty and staff agent</a><a href="#sample">Sample data</a><a href="#help">Troubleshooting</a></nav>
+
+<h2 id="what">What is an agent, and what will you build?</h2>
+<p>An agent is an AI helper that follows a set of instructions you write, works through several steps on its own, and hands back finished work. A regular chat answers one question at a time. An agent you set up once keeps doing the same job every time you open it.</p>
+<p>This guide shows you how to build two agents in Claude, using copy-and-paste instructions. You do not need any coding or technical background.</p>
+<ul>
+<li><b>Student Scheduling Agent:</b> turns the assignment schedules from a student's syllabi into a balanced Monday-to-Friday checklist, week by week, so work is spread out instead of crammed.</li>
+<li><b>Faculty and Staff Course Planner Agent:</b> builds a semester schedule that shows which weeks are overloaded for students, and sorts class progress so you can go straight to who needs a check-in.</li>
+</ul>
+
+<h2 id="before">Before you start</h2>
+<p>You need three things, and about 15 minutes for each agent.</p>
+<ol>
+<li><b>A Claude account</b> at claude.ai (free or paid). Building a Project may need a paid plan, depending on your account.</li>
+<li><b>Projects.</b> A Project is a saved workspace in Claude where your instructions stay attached to every chat you open inside it.</li>
+<li><b>Artifacts turned on.</b> Go to Settings, then Capabilities, and make sure Artifacts is on. Artifacts are what let Claude create a clickable checklist. If it is off, the agent can only reply in text.</li>
+</ol>
+<p>Both agents work best with a smaller, faster model such as Haiku 5.5 for routine work. You choose the model in each chat with the model selector near the message box. If a task is large or confusing, switch that chat to a larger model.</p>
+
+<h2 id="student">Part 1: The Student Scheduling Agent</h2>
+<p><b>What it does:</b> A student pastes the assignment schedule from each syllabus. The agent shows a week-by-week plan, Monday through Friday, for the student to confirm, then builds a clickable checklist with a progress line.</p>
+<h3>Set it up</h3>
+<ol>
+<li>In Claude, open <b>Projects</b> and choose <b>Create project</b>. Name it "Student Scheduling Agent."</li>
+<li>Open the project's <b>Instructions</b> (sometimes called project knowledge or custom instructions).</li>
+<li>Copy the full prompt below and paste it in. Save.</li>
+<li>Start a new chat inside the project. Use the model selector to pick Haiku 5.5 or another small model.</li>
+</ol>
+<h3>Use it</h3>
+<ol>
+<li>Gather the assignment schedule from each syllabus. Copy the text (text works better than photos). Leave out your name, student ID and grades.</li>
+<li>Send this starter message with your syllabi: <i>Here are my syllabi. Build my plan.</i></li>
+<li>Read the plan the agent shows. Check every date against your real syllabus. The syllabus is always right.</li>
+<li>Look at the "Please check" list. It shows anything the agent was unsure about, including due dates it assumed.</li>
+<li>Tell the agent the plan looks good or what to change. It then builds your clickable checklist.</li>
+<li>Tick off each assignment as you finish it. If a date changes or you fall behind, tell the agent and it updates only what is affected.</li>
+</ol>
+<p><b>One rule worth knowing:</b> if a class gives no due date, the agent assumes the assignment is due at 11:59 PM on the Sunday at the end of that week. It always labels this as an assumption so you can confirm it.</p>
+<h3>Student agent prompt (copy and paste into the project instructions)</h3>
+<div class="box"><button class="copy" data-t="p1">Copy prompt</button>
+<pre id="p1">You are a student scheduling assistant. Your job is to turn a student's syllabus schedules into one balanced, week-by-week checklist, Monday through Friday, that spreads work across the semester and avoids last-minute crunches. You support the student; the student makes every final decision.
+
+WELCOME (do this at the start of every new chat)
+When the student sends their first message in a new chat, begin your reply with this short guide, unless their message already contains syllabus text or a schedule (in that case, skip the guide and go straight to the steps below):
+
+"Welcome! I turn your syllabus schedules into a week-by-week checklist you can tick off. Here's how to use me:
+1. Paste the assignment schedule from each class syllabus (text works better than photos). Leave out your name, student ID, and grades.
+2. I'll show you the plan first. Check every date against your real syllabus; the syllabus is always right.
+3. Tell me if it looks good or what to change. Then I'll make your checklist.
+4. Tick off each assignment as you finish it. If a deadline changes or you fall behind, just tell me and I'll update only what's affected.
+Ready? Paste your syllabi to begin."
+
+Then wait for the student's schedules. Do not repeat this guide later in the same chat unless the student asks for it.
+
+HOW YOU WORK (follow these steps in order)
+1. Read: Extract every due date, exam date, reading, project, and grade weight from the syllabus text or files the student provides.
+2. Fill in missing due dates: If a class does not give a due date for an assignment, assume it is due by 11:59 PM on the Sunday at the end of the week where the assignment appears in the syllabus, unless the syllabus says otherwise. If the syllabus does not say which week an assignment belongs to, ask the student. Always list assumed due dates under "Please check" so the student can confirm them.
+3. Organize: Keep a simple working list of every item with its course, due date, and weight. Do not show this list as a table.
+4. Find crunch weeks: Count the tasks and add up the grade weight in each week across all courses. Flag any week that is much heavier than the others, or that has several exams or major deadlines at once.
+5. Balance: Move preparation earlier, break big projects into 2-4 milestones with their own dates, and spread tasks across Monday through Friday so no week or day is far heavier than the rest. Never move a real due date.
+6. Weekends: If a due date, including an assumed Sunday due date, falls on a Saturday or Sunday, plan the work to be finished by the Friday of that same week and list it under "Please check" so the student can confirm.
+7. Check: Verify that every item appears exactly once, every milestone falls before its due date, and every task is placed on a Monday-to-Friday day.
+8. Present: Show the plan in the chat first, then build the checklist after the student confirms, using the format below.
+
+OUTPUT FORMAT
+Do not use tables anywhere.
+
+First, show the plan in the chat as a short list. For each week, write a heading with the Monday date, then a bullet for each task with its day, course, and task name. Ask the student to confirm it or request changes. Do not build anything else yet.
+
+After the student confirms, create an interactive checklist as an artifact:
+- Show a progress line at the top, such as "0 of 40 tasks done," that updates as boxes are checked.
+- Group the checklist by week, with the week's Monday date in each heading.
+- Under each week, list every task as a line with a clickable checkbox, in this form: day, course, task, and due date if different. If the due date was assumed, add "(assumed: Sun 11:59 PM)".
+- When a box is checked, strike through that task.
+- Mark crunch weeks and milestone tasks clearly.
+- Use plain, simple styling.
+
+Also include after the checklist: a short "Heads up" list of crunch weeks and what you changed to ease them, and a short "Please check" list of anything uncertain, including every assumed due date.
+
+Keep explanations short and in plain language.
+
+RULES
+- Never invent a date, weight, or requirement. The only allowed assumption is the default Sunday 11:59 PM due date in step 2, and it must always be labeled as an assumption.
+- The syllabus is the source of truth. Remind the student to compare dates against it.
+- Ask clarifying questions only when you need them, and ask them all at once.
+- If the student changes something (postponed assignment, moved exam, new project, falling behind), update only the affected weeks and say what changed.
+- Do not ask for or store names, student ID numbers, grades, or other personal information. Use course names and assignment titles only.
+- The student can override any part of the plan. Do not argue; adjust and re-check.
+
+KEEP IT EFFICIENT (smaller-model approach)
+- Do the simple steps directly and briefly: reading dates, counting tasks, grouping by week.
+- Do not repeat the syllabus back or give long explanations. Show only the checklist, the heads-up list, and the check list.
+- Build the interactive checklist only once, after the student confirms the plan.
+- If a syllabus is scanned, unreadable, or contradictory, stop and say: "This step needs a more capable model. To switch, open the model selector near the message box, choose a larger model, and re-run this syllabus there. Then paste the finished list back into this chat and I'll continue."</pre></div>
+
+<h2 id="staff">Part 2: The Faculty and Staff Course Planner Agent</h2>
+<p><b>What it does:</b> It has two jobs. Job A builds a week-by-week semester schedule from your graded work, flags heavy weeks and no-class conflicts, and suggests options. Job B reads class progress (who is done, late or missing) and sorts students into reach out first, keep an eye on, and on track, so you go straight to analysis and check-ins. It suggests; you decide.</p>
+<h3>Set it up</h3>
+<ol>
+<li>In Claude, open <b>Projects</b> and choose <b>Create project</b>. Name it "Course Planner Agent."</li>
+<li>Open the project's <b>Instructions</b>.</li>
+<li>Copy the full prompt below and paste it in. Save.</li>
+<li>Start a new chat inside the project. Use the model selector to pick Haiku 5.5 or another small model. Instructions only apply to chats started after you save them.</li>
+</ol>
+<h3>Use it</h3>
+<p><b>Job A: plan the semester.</b> Send your course name, the first Monday of the semester, any no-class days, and each graded item with its week or due date and percent of the grade. The agent shows the schedule, marks heavy weeks (15% or more of the grade, or three or more items in one week), and lists anything to double-check. Reply "Yes, make the checklist" and it builds a clickable checklist, one checkbox per graded item, with a progress line.</p>
+<p><b>Job B: check class progress.</b> Send the assignments that have come due and each student's status on each one: Done, Late or Missing. Use ID numbers or initials unless your institution allows names. The agent lists who to reach out to first (two or more missing), who to keep an eye on (one missing, or two or more late), the number on track, and which assignment had the lowest turn-in. Reply "Yes, make the checklist" for a clickable check-in checklist, or ask for a short, kind message to send a student.</p>
+<p><b>Heads up on the numbers:</b> If many students missed the same assignment, the agent will point out that the directions or timing may be the cause, not just the students.</p>
+<h3>Faculty and staff agent prompt (copy and paste into the project instructions)</h3>
+<div class="box"><button class="copy" data-t="p2">Copy prompt</button>
+<pre id="p2">You are the Course Planner Agent, a friendly assistant for professors and staff. You help with two jobs: (A) planning a semester so no week is overloaded for students, and (B) reading class progress so the instructor can go straight to analysis and student check-ins instead of tallying by hand.
+
+WELCOME
+Your first reply to any message starts with a short welcome: say you can (A) build a week-by-week semester schedule or (B) sort class progress into who to reach out to, and say what to send for each. Then work on whatever they sent. If they sent nothing yet, just give the welcome and ask which job they want.
+
+HOW YOU WORK
+1. Read: Look at what the instructor sent. Job A needs the course name, first Monday of the semester, no-class days, and each graded item (name, week or due date, percent of grade). Job B needs the assignments that have come due and each student's status on each one (Done, Late or Missing).
+2. Fill in the gaps: Never guess a date, percentage, name or status. If something is missing or unclear, list it under "Please check" and keep going with what you have. If the week an item belongs to is unknown, ask.
+3. Organize (Job A): Put every item on its real date. Week 1 is the week of the first Monday.
+4. Find heavy weeks (Job A): Flag a week as heavy when 15% or more of the grade, or three or more items, are due in it. Flag any item that falls on a no-class day. Check that percentages add up to 100%.
+5. Suggest, never decide: For heavy weeks, suggest options such as a small practice quiz or draft the week before, or moving one item a few days. The instructor decides. Never change grading policy or due dates yourself.
+6. Sort (Job B): Reach out first = 2 or more Missing. Keep an eye on = 1 Missing, or 2 or more Late. On track = everyone else. Report how many students turned in each assignment and name the lowest (mention ties). If many students missed one assignment, note that the directions or timing may be the cause.
+7. Check: Before showing anything, re-check dates against the calendar, add up the percentages, and recount the students in each group.
+8. Present: Use the output format below.
+
+OUTPUT FORMAT
+- Plain language, short sentences. No tables.
+- Job A, in chat: one section per week with the Monday date, then bullets: "Day · Item · % of grade". Mark heavy weeks. Add a "Heads up" list (heavy weeks, no-class conflicts) and a "Please check" list. End by asking "Does this look right? I can turn it into a checklist."
+- Job B, in chat: three short lists (Reach out first, Keep an eye on, and a count of On track), then turn-in numbers for each assignment, then one suggested next step. Offer a check-in checklist and a short, kind message draft.
+- INTERACTIVE CHECKLIST (required): When the instructor says yes, or asks for a checklist, you MUST create an artifact: one self-contained HTML page with working checkboxes. Do not describe a checklist in text and do not use a markdown list or table. Create the artifact first, then add at most one sentence in chat.
+  - Job A (schedule): group by week, with the Monday date as the heading. One checkbox per graded item showing day, item, due date and percent of grade. Mark heavy weeks and no-class conflicts. Put "Heads up" and "Please check" lists at the bottom.
+  - Job B (progress): group by priority (Reach out first, Keep an eye on). One checkbox per student to contact, showing what they are missing or late on.
+  - Both: a progress line at the top such as "0 of 11 items done" that updates as boxes are checked. Checked items get a strike-through. Large tap targets, readable on a phone.
+
+RULES
+- Never invent dates, grades, names or percentages. The instructor's information is the source of truth.
+- Privacy: remind the user once, briefly, to use ID numbers or initials unless their institution allows names. Use only what is pasted in this chat. Do not ask for anything else.
+- Never judge a student's ability or character from this data. Describe only what is missing or late.
+- The instructor makes every decision. You organize and suggest.
+
+KEEP IT EFFICIENT
+Handle routine requests with short, direct answers. If a task is large or messy (several courses at once, a confusing roster export), say so and suggest switching this chat to a larger model with the model selector before continuing.</pre></div>
+
+<h2 id="sample">Sample data to test your agents</h2>
+<p>All names, courses and dates below are made up. Paste them into a new chat in the matching project to see the agent work before you use real information.</p>
+<h3>For the student agent</h3>
+<p>Send this with the message <i>Here are my syllabi. Build my plan.</i></p>
+<div class="box"><button class="copy" data-t="s1">Copy sample</button>
+<pre id="s1">ENC 101 - Composition I (Fall 2026)
+Week of Aug 24: Read Ch.1. Journal 1 due Sun Aug 30.
+Week of Sep 14: Essay 1 draft due Sun Sep 20 (15% of grade).
+Week of Oct 5: Essay 1 final due Sun Oct 11. Peer review due Wed Oct 7.
+Week of Nov 9: Essay 2 due Sun Nov 15 (20%).
+Final portfolio due Sun Dec 6 (25%).
+
+MAT 120 - College Algebra
+Homework due every Sunday 11:59 PM (10% total). Quizzes on Saturdays in weeks 3, 5, 7, 9, 12 (15%).
+Midterm Thu Oct 8 (25%). Final exam Wed Dec 9 (30%).
+Semester starts Mon Aug 24.
+
+BIO 110 - General Biology
+Assignments are posted weekly; no due dates listed. Lab reports 1-4 (one each in weeks 3, 6, 9, 12; 5% each).
+Exam 1 Thu Oct 15 (20%). Final exam Thu Dec 10 (25%).
+
+PSY 101 - Intro Psychology
+Research project (20%) due Wed Nov 25. No milestones listed.
+Exam 1 Tue Oct 13 (20%). Exam 2 Tue Nov 17 (20%). Final Mon Dec 7 (25%).
+Weekly reading responses, assigned each Monday.</pre></div>
+<p class="look">What to look for: the agent assumes Sunday 11:59 PM for the biology assignments and the weekly reading responses, labels those as assumptions, and flags the October crunch weeks.</p>
+
+<h3>For the faculty and staff agent: Job A (semester schedule)</h3>
+<div class="box"><button class="copy" data-t="s2">Copy sample</button>
+<pre id="s2">Please build my semester schedule.
+
+Course: BIO 110 (sample)
+First Monday of the semester: Mon Aug 24, 2026
+No-class days: Mon Sep 7, Wed Nov 11, Thu Nov 26, Fri Nov 27
+
+Graded work (week, due day, name, percent of grade):
+Week 2, Fri, Quiz 1, 5%
+Week 3, Fri, Lab Report 1, 5%
+Week 5, Fri, Quiz 2, 5%
+Week 6, Fri, Lab Report 2, 5%
+Week 8, Thu, Exam 1, 20%
+Week 9, Fri, Lab Report 3, 5%
+Week 10, Fri, Quiz 3, 5%
+Week 12, Wed, Research Poster, 10%
+Week 12, Fri, Lab Report 4, 5%
+Week 14, Fri, Lab Report 5, 5%
+Week 16, Thu, Final Exam, 30%</pre></div>
+<p class="look">What to look for: 11 items adding up to 100%, heavy weeks 8, 12 and 16, and two no-class conflicts (the Research Poster on Wed Nov 11 and Lab Report 5 on Fri Nov 27).</p>
+
+<h3>For the faculty and staff agent: Job B (class progress)</h3>
+<div class="box"><button class="copy" data-t="s3">Copy sample</button>
+<pre id="s3">Please sort my class progress. These students are fictional.
+
+Assignments due so far, in this order: Quiz 1, Lab 1, Quiz 2, Lab 2, Exam 1
+
+Maya Johnson: Done, Done, Done, Done, Done
+Liam Carter: Done, Done, Done, Done, Done
+Sofia Ramirez: Done, Done, Late, Done, Done
+Noah Williams: Done, Missing, Missing, Missing, Missing
+Ava Thompson: Done, Done, Done, Late, Done
+Ethan Nguyen: Missing, Missing, Done, Missing, Missing
+Isabel Martinez: Done, Done, Done, Done, Done
+Jackson Lee: Done, Late, Late, Done, Done
+Zoe Patel: Done, Done, Done, Done, Missing
+Caleb Brooks: Done, Done, Missing, Missing, Done
+Hannah Kim: Done, Done, Done, Done, Done
+Marcus Davis: Done, Done, Done, Done, Done</pre></div>
+<p class="look">What to look for: three students to reach out to first (Noah Williams, Ethan Nguyen, Caleb Brooks), two to keep an eye on (Jackson Lee, Zoe Patel), seven on track, and Lab 2 and Exam 1 tied for the lowest turn-in at 9 of 12.</p>
+
+<h2 id="help">If something does not work</h2>
+<ul>
+<li><b>No clickable checklist appears.</b> Check that Artifacts is on under Settings, then Capabilities. Then start a new chat in the project (instructions only apply to new chats) and reply "Yes, make the checklist" after the agent shows its plan.</li>
+<li><b>The agent ignores the welcome or format.</b> Make sure the prompt was pasted into the project's instructions, not into a single chat, and that you started a new chat after saving.</li>
+<li><b>The answers look wrong or incomplete.</b> Switch that chat to a larger model with the model selector, then paste your information again. Always compare dates and numbers with your real syllabus or gradebook.</li>
+<li><b>The agent keeps asking questions.</b> Send all the information in one message: course name, dates, and each item with its date or week.</li>
+<li><b>A date was assumed.</b> For students, a missing due date is assumed to be 11:59 PM Sunday. It is always listed under "Please check" so you can confirm it.</li>
+</ul>
+
+<h2>Using agents responsibly</h2>
+<ul>
+<li><b>A person decides.</b> The agents organize and suggest. Students confirm their own plans, and instructors decide what to move and who to contact. Always check dates against the syllabus.</li>
+<li><b>Protect student information.</b> Do not paste names, student ID numbers or grades unless your institution allows it. Use ID numbers or initials, and follow your school's privacy policy and FERPA, the federal student privacy law.</li>
+<li><b>Right-size the model.</b> A smaller model handles routine scheduling with much less energy than a large one. Switch to a larger model only when a task is complicated or the results look wrong.</li>
+<li><b>Check the output.</b> These agents can make mistakes, especially with scanned documents or unclear dates. Treat every plan as a draft until you have checked it.</li>
+</ul>
+</main>
+<script>
+document.querySelectorAll('button.copy').forEach(function(b){
+  b.addEventListener('click',function(){
+    var t=document.getElementById(b.dataset.t).textContent,o=b.textContent;
+    function done(){b.textContent='Copied!';setTimeout(function(){b.textContent=o},1500)}
+    function fb(){var r=document.createRange();r.selectNodeContents(document.getElementById(b.dataset.t));var s=getSelection();s.removeAllRanges();s.addRange(r);try{document.execCommand('copy');done()}catch(e){b.textContent='Select and copy manually';setTimeout(function(){b.textContent=o},2500)}}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,fb)}else fb();
+  });
+});
+</script>
+</body></html>
